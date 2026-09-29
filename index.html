@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Papan Skor Domino - Anawula Club</title>
+  <!-- Import Font Roboto -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      /* Latar Belakang Dashboard Hijau Muda */
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+      background-attachment: fixed;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 10px;
+      color: #0f172a;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 850px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #064e3b;
+      padding: 10px 24px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 20px rgba(6, 78, 59, 0.25);
+      margin-top: 5px;
+    }
+
+    header svg {
+      width: 28px;
+      height: 28px;
+      fill: #a7f3d0;
+      filter: drop-shadow(0 0 6px rgba(167, 243, 208, 0.8));
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #ffffff;
+      text-transform: uppercase;
+    }
+
+    /* Container Scoreboard Utama */
+    .scoreboard-wrapper {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      margin-top: 5px;
+    }
+
+    .scoreboard {
+      display: flex;
+      width: 100%;
+      min-height: 520px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.6);
+    }
+
+    /* Badge VS di Tengah */
+    .vs-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      background: #0f172a;
+      color: #facc15;
+      font-weight: 900;
+      font-size: 1.5rem;
+      padding: 10px 16px;
+      border-radius: 50px;
+      border: 3px solid #ffffff;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+    }
+
+    /* Kartu Tim Hijau (Kiri) */
+    .team-card.hijau {
+      flex: 1;
+      background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+      color: #ffffff;
+      padding: 30px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Kartu Tim Biru (Kanan) */
+    .team-card.biru {
+      flex: 1;
+      background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+      color: #ffffff;
+      padding: 30px 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-left: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Header Tim */
+    .team-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .team-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .hijau .team-title {
+      color: #86efac;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .biru .team-title {
+      color: #f0f9ff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Form Input Skor */
+    .score-form {
+      width: 100%;
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .input-wrapper input {
+      flex: 1;
+      width: 100%;
+      padding: 10px 6px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      outline: none;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #facc15;
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+    }
+
+    .btn-add {
+      background: #facc15;
+      color: #0f172a;
+      border: none;
+      border-radius: 10px;
+      padding: 0 14px;
+      font-weight: 900;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .btn-add:active {
+      transform: scale(0.95);
+    }
+
+    /* Skor Akumulasi Besar */
+    .score-accumulated {
+      font-size: 5.5rem;
+      font-weight: 900;
+      line-height: 1;
+      margin: 10px 0 22px 0;
+      color: #ffffff;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    /* Tombol Undo Polos (Tanpa Kotak/Latar) */
+    .btn-undo-icon {
+      background: transparent;
+      border: none;
+      font-size: 2.2rem;
+      cursor: pointer;
+      line-height: 1;
+      margin: 5px 0 18px 0;
+      transition: transform 0.2s ease;
+      user-select: none;
+      outline: none;
+      box-shadow: none;
+    }
+
+    .btn-undo-icon:hover {
+      transform: scale(1.25) rotate(-10deg);
+    }
+
+    .btn-undo-icon:active {
+      transform: scale(0.95);
+    }
+
+    /* Riwayat Input Poin (Chips) */
+    .history-label {
+      font-size: 0.7rem;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.85;
+      font-weight: 500;
+    }
+
+    .history-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+      max-width: 170px;
+      min-height: 32px;
+      margin-bottom: 12px;
+      padding: 4px;
+    }
+
+    .chip {
+      background: rgba(255, 255, 255, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 12px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chip-del {
+      background: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Badge Skor Set */
+    .set-score-badge {
+      background: rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .set-score-badge .count {
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: #facc15;
+    }
+
+    /* Tombol Kontrol */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary {
+      background: #064e3b;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 10px rgba(6, 78, 59, 0.2);
+    }
+
+    .btn-secondary:hover {
+      background: #047857;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2);
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    /* Counter Pengunjung */
+    .visitor-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      margin-top: 5px;
+    }
+
+    .visitor-title {
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #064e3b;
+    }
+
+    .visitor-badge {
+      display: flex;
+      gap: 15px;
+      background: #064e3b;
+      padding: 6px 16px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.8rem;
+      color: #e2e8f0;
+    }
+
+    .visitor-badge strong {
+      color: #facc15;
+      font-weight: 700;
+    }
+
+    /* Modal Pemenang */
+    .winner-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .winner-card {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 2px solid #facc15;
+      padding: 35px 25px;
+      border-radius: 24px;
+      text-align: center;
+      max-width: 380px;
+      width: 90%;
+      box-shadow: 0 0 50px rgba(250, 204, 21, 0.4);
+      animation: scaleUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .trophy-icon {
+      font-size: 4rem;
+      margin-bottom: 10px;
+      animation: bounce 0.8s infinite alternate;
+    }
+
+    .winner-card h2 {
+      color: #facc15;
+      font-size: 1.8rem;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .winner-card p {
+      font-size: 1rem;
+      color: #cbd5e1;
+      margin-bottom: 25px;
+    }
+
+    .winner-card .btn-win {
+      background: linear-gradient(135deg, #eab308, #ca8a04);
+      color: #000;
+      font-weight: 900;
+      padding: 12px 28px;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(234, 179, 8, 0.4);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #166534;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleUp {
+      from { transform: scale(0.7); }
+      to { transform: scale(1); }
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-12px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header>
+      <svg viewBox="0 0 24 24">
+        <path d="M19,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M19,11H5V5H19V11M19,19H5V13H19V19M8.5,8A1.5,1.5 0 0,1 7,6.5A1.5,1.5 0 0,1 8.5,5A1.5,1.5 0 0,1 10,6.5A1.5,1.5 0 0,1 8.5,8M15.5,8A1.5,1.5 0 0,1 14,6.5A1.5,1.5 0 0,1 15.5,5A1.5,1.5 0 0,1 17,6.5A1.5,1.5 0 0,1 15.5,8M8.5,16A1.5,1.5 0 0,1 7,14.5A1.5,1.5 0 0,1 8.5,13A1.5,1.5 0 0,1 10,14.5A1.5,1.5 0 0,1 8.5,16M15.5,16A1.5,1.5 0 0,1 14,14.5A1.5,1.5 0 0,1 15.5,13A1.5,1.5 0 0,1 17,14.5A1.5,1.5 0 0,1 15.5,16Z"/>
+      </svg>
+      <h1>Anawula Club</h1>
+    </header>
+
+    <!-- Area Scoreboard -->
+    <div class="scoreboard-wrapper">
+      <div class="vs-badge">VS</div>
+      
+      <div class="scoreboard">
+        <!-- Kubu Kiri: Tim Hijau -->
+        <div class="team-card hijau">
+          <div class="team-header">
+            <div class="team-title">TIM HIJAU</div>
+          </div>
+          
+          <form class="score-form" onsubmit="addScore(event, 'A')">
+            <div class="input-wrapper">
+              <input type="number" id="inputA" inputmode="numeric" pattern="[0-9]*" placeholder="+ Skor" autocomplete="off">
+              <button type="submit" class="btn-add">+</button>
+            </div>
+          </form>
+
+          <div class="score-accumulated" id="scoreA">0</div>
+
+          <!-- Ikon Undo Polos (Tanpa Kotak) -->
+          <button class="btn-undo-icon" onclick="undoLastScore('A')" title="Urungkan Skor Terakhir">↩️</button>
+
+          <div class="history-label">Riwayat skor:</div>
+          <div class="history-chips" id="historyA"></div>
+
+          <div class="set-score-badge">
+            <span>SET:</span>
+            <span class="count" id="setA">0</span>
+          </div>
+        </div>
+
+        <!-- Kubu Kanan: Tim Biru -->
+        <div class="team-card biru">
+          <div class="team-header">
+            <div class="team-title">TIM BIRU</div>
+          </div>
+
+          <form class="score-form" onsubmit="addScore(event, 'B')">
+            <div class="input-wrapper">
+              <input type="number" id="inputB" inputmode="numeric" pattern="[0-9]*" placeholder="+ Skor" autocomplete="off">
+              <button type="submit" class="btn-add">+</button>
+            </div>
+          </form>
+
+          <div class="score-accumulated" id="scoreB">0</div>
+
+          <!-- Ikon Undo Polos (Tanpa Kotak) -->
+          <button class="btn-undo-icon" onclick="undoLastScore('B')" title="Urungkan Input Terakhir">↩️</button>
+
+          <div class="history-label">Riwayat skor:</div>
+          <div class="history-chips" id="historyB"></div>
+
+          <div class="set-score-badge">
+            <span>SET:</span>
+            <span class="count" id="setB">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tombol Kontrol -->
+    <div class="controls">
+      <button class="btn btn-secondary" onclick="resetCurrentSet()">🔄 Reset Set</button>
+      <button class="btn btn-danger" onclick="resetAllMatch()">⚠️ Reset Semua</button>
+    </div>
+
+    <!-- Counter Pengunjung -->
+    <div class="visitor-wrapper">
+      <div class="visitor-title">JUMLAH PENGUNJUNG</div>
+      <div class="visitor-badge">
+        <span>👁️ Hari Ini: <strong id="visitorToday">...</strong></span>
+        <span>|</span>
+        <span>🌐 Total: <strong id="visitorTotal">...</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Animasi Pemenang -->
+  <div class="winner-modal" id="winnerModal">
+    <div class="winner-card">
+      <div class="trophy-icon">🏆</div>
+      <h2 id="winnerTitle">TIM MENANG!</h2>
+      <p id="winnerDesc">Mencapai skor 101+ dan mendapatkan Set.</p>
+      <button class="btn-win" onclick="closeModalAndNextSet()">Lanjut Set Berikutnya</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    Powered by Anto Design Concept - 2026
+  </footer>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwDAJTfxFjHY3NmrS7al9Q2VwcV1U_c_gwG6h0SnYLpkgEIw4MxI82mfsLAUVEVAGX06Q/exec';
+    let historyA = [];
+    let historyB = [];
+    let setWinsA = 0;
+    let setWinsB = 0;
+
+    window.onload = function() {
+      fetchVisitorStats();
+    };
+
+    function fetchVisitorStats() {
+      fetch(API_URL + '?api=visitor')
+        .then(response => response.json())
+        .then(showVisitorStats)
+        .catch(error => {
+          console.error('Gagal mengambil statistik pengunjung:', error);
+          document.getElementById('visitorToday').innerText = '-';
+          document.getElementById('visitorTotal').innerText = '-';
+        });
+    }
+
+    function showVisitorStats(data) {
+      if (data) {
+        document.getElementById('visitorToday').innerText = data.today;
+        document.getElementById('visitorTotal').innerText = data.total;
+      }
+    }
+
+    function addScore(event, team) {
+      event.preventDefault();
+
+      const inputElem = document.getElementById(team === 'A' ? 'inputA' : 'inputB');
+      const val = parseInt(inputElem.value, 10);
+
+      if (!isNaN(val) && val > 0) {
+        if (team === 'A') {
+          historyA.push(val);
+        } else {
+          historyB.push(val);
+        }
+        inputElem.value = '';
+        updateDisplay();
+      } else {
+        inputElem.value = '';
+      }
+    }
+
+    function removeScore(team, index) {
+      if (team === 'A') {
+        historyA.splice(index, 1);
+      } else {
+        historyB.splice(index, 1);
+      }
+      updateDisplay();
+    }
+
+    function undoLastScore(team) {
+      if (team === 'A' && historyA.length > 0) {
+        historyA.pop();
+      } else if (team === 'B' && historyB.length > 0) {
+        historyB.pop();
+      }
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const scoreAccumA = historyA.reduce((sum, v) => sum + v, 0);
+      const scoreAccumB = historyB.reduce((sum, v) => sum + v, 0);
+
+      document.getElementById('scoreA').innerText = scoreAccumA;
+      document.getElementById('scoreB').innerText = scoreAccumB;
+
+      renderHistory('A');
+      renderHistory('B');
+
+      checkWinCondition(scoreAccumA, scoreAccumB);
+    }
+
+    function renderHistory(team) {
+      const container = document.getElementById(team === 'A' ? 'historyA' : 'historyB');
+      const historyArr = team === 'A' ? historyA : historyB;
+
+      if (historyArr.length === 0) {
+        container.innerHTML = '<span style="font-size: 0.75rem; opacity: 0.7; font-style: italic;">Belum ada skor</span>';
+        return;
+      }
+
+      container.innerHTML = historyArr.map((val, idx) => `
+        <div class="chip">
+          +${val}
+          <button class="chip-del" onclick="removeScore('${team}', ${idx})" title="Hapus poin ${val}">✕</button>
+        </div>
+      `).join('');
+    }
+
+    function checkWinCondition(scoreAccumA, scoreAccumB) {
+      let winner = null;
+      let setPointsAdded = 1;
+
+      if (scoreAccumA >= 101) {
+        winner = 'A';
+        if (scoreAccumB === 0) setPointsAdded = 2;
+      } else if (scoreAccumB >= 101) {
+        winner = 'B';
+        if (scoreAccumA === 0) setPointsAdded = 2;
+      }
+
+      if (winner) {
+        const winningTeamName = winner === 'A' ? 'TIM HIJAU' : 'TIM BIRU';
+
+        if (winner === 'A') {
+          setWinsA += setPointsAdded;
+          document.getElementById('setA').innerText = setWinsA;
+        } else {
+          setWinsB += setPointsAdded;
+          document.getElementById('setB').innerText = setWinsB;
+        }
+
+        document.getElementById('winnerTitle').innerText = `${winningTeamName} MENANG! 🎉`;
+        document.getElementById('winnerDesc').innerText = setPointsAdded === 2
+          ? `Menang Mutlak (Skor Lawan 0)! Mendapatkan +2 SET!`
+          : `Mencapai skor 101+ dan mendapatkan +1 SET.`;
+        
+        document.getElementById('winnerModal').style.display = 'flex';
+      }
+    }
+
+    function closeModalAndNextSet() {
+      document.getElementById('winnerModal').style.display = 'none';
+      resetCurrentSet();
+    }
+
+    function resetCurrentSet() {
+      historyA = [];
+      historyB = [];
+      updateDisplay();
+      document.getElementById('inputA').value = '';
+      document.getElementById('inputB').value = '';
+    }
+
+    function resetAllMatch() {
+      resetCurrentSet();
+      setWinsA = 0;
+      setWinsB = 0;
+      document.getElementById('setA').innerText = '0';
+      document.getElementById('setB').innerText = '0';
+    }
+
+    renderHistory('A');
+    renderHistory('B');
+  </script>
+</body>
+</html>
