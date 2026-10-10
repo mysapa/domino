@@ -44,7 +44,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 6px;
       background: #064e3b;
       padding: 6px 12px;
       border-radius: 50px;
@@ -62,7 +62,7 @@
 
     header h1 {
       font-size: 16px;
-      font-weight: 900;
+      font-weight: 800;
       letter-spacing: 2px;
       color: #ffffff;
       text-transform: uppercase;
@@ -187,6 +187,12 @@
       box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
     }
 
+.input-wrapper input::placeholder {
+  font-weight: 400;          /* Mengubah menjadi TIPIS / Normal */
+  color: #a0a0a0;            /* Warna abu-abu halus agar tidak terlalu mencolok */
+  opacity: 1;                
+}
+    
     .btn-add {
       background: #facc15;
       color: #0f172a;
